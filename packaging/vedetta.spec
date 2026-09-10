@@ -1,7 +1,9 @@
 # -*- mode: python ; coding: utf-8 -*-
 # PyInstaller: pyinstaller packaging/vedetta.spec   (eseguito dalla radice del progetto)
+import os
 from PyInstaller.utils.hooks import collect_all
 
+ROOT = os.path.abspath(os.path.join(SPECPATH, ".."))  # radice del progetto, qualunque sia la cartella di lancio
 datas, binaries, hiddenimports = [], [], []
 for pkg in ("ultralytics", "lap"):
     d, b, h = collect_all(pkg)
@@ -9,7 +11,7 @@ for pkg in ("ultralytics", "lap"):
 hiddenimports += ["mss", "yaml", "cv2", "vedetta", "vedetta.app", "vedetta.tools.zone_editor", "vedetta.tools.region_picker"]
 
 a = Analysis(
-    ["run.py"], pathex=["."], binaries=binaries, datas=datas, hiddenimports=hiddenimports,
+    [os.path.join(ROOT, "run.py")], pathex=[ROOT], binaries=binaries, datas=datas, hiddenimports=hiddenimports,
     hookspath=[], runtime_hooks=[], excludes=["matplotlib", "pandas", "scipy", "IPython", "tkinter"],
     noarchive=False,
 )
