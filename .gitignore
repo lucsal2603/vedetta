@@ -11,3 +11,6 @@ dist/
 runs/
 .DS_Store
 assets/alert.wav
+prova-ci.mp4
+config.ci.yaml
+ci.log

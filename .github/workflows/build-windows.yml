@@ -25,6 +25,21 @@ jobs:
         run: python -m unittest tests.test_gesture
       - name: PyInstaller
         run: pyinstaller packaging/vedetta.spec --noconfirm
+      - name: Prova dell'eseguibile (video finto, senza finestra)
+        shell: bash
+        run: |
+          python - <<'PY'
+          import cv2, numpy as np
+          w = cv2.VideoWriter("prova-ci.mp4", cv2.VideoWriter_fourcc(*"mp4v"), 8, (320, 240))
+          for i in range(24):
+              w.write((np.random.rand(240, 320, 3) * 255).astype("uint8"))
+          w.release()
+          PY
+          printf 'model: yolo11n-pose.pt\nsources:\n  - {name: prova, type: video, path: prova-ci.mp4, loop: false}\nalert: {sound: false, silent_mode: true}\n' > config.ci.yaml
+          ./dist/Vedetta/Vedetta.exe --config config.ci.yaml --headless --no-loop 2>&1 | tee ci.log
+          grep -q "fine:" ci.log
+          ./dist/Vedetta/Vedetta.exe zone --help > /dev/null
+          ./dist/Vedetta/Vedetta.exe riquadri --help > /dev/null
       - name: Cartella finale
         shell: bash
         run: |
