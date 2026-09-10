@@ -1,0 +1,46 @@
+# Vedetta - configurazione
+# Le coordinate delle zone scaffale stanno nei file zones/<nome>.json
+# (si disegnano con: python -m vedetta.tools.zone_editor --source <nome>)
+
+model: yolo11n-pose.pt
+device: auto          # auto | cpu | cuda | mps
+imgsz: 640            # lato lungo dell'immagine passata al modello
+conf: 0.35            # confidenza minima persona
+fps_target: 8         # fotogrammi analizzati al secondo per ogni telecamera
+
+sources:
+  # Prova su file video (sul Mac)
+  - name: mele
+    type: video
+    path: test-videos/pexels-spesa-mele.mp4
+    loop: true
+
+  # Esempio cattura schermo (sul PC di lavoro): un riquadro del client
+  # region = [x, y, larghezza, altezza] in pixel dello schermo
+  # (si ricava con: python -m vedetta.tools.region_picker)
+  # - name: corsia-3
+  #   type: screen
+  #   monitor: 1
+  #   region: [0, 60, 960, 540]
+
+gesture:
+  reach_min_s: 0.25        # mano nello scaffale almeno per questo tempo
+  conceal_window_s: 4.0    # finestra dopo lo scaffale in cui cercare l'occultamento
+  conceal_min_s: 0.35      # mano al corpo/borsa almeno per questo tempo
+  occlusion_grace_s: 1.0   # mano sparita dopo il gesto: conta come occultamento
+  cooldown_s: 8.0          # secondi tra due allarmi sulla stessa persona
+  min_score: 0.5           # sotto questo punteggio l'evento si registra ma non suona
+
+clips:
+  dir: clips
+  pre_s: 8                 # secondi prima dell'evento
+  post_s: 4                # secondi dopo
+  keep_hours: 12           # le clip più vecchie si cancellano da sole
+
+alert:
+  sound: true
+  silent_mode: false       # true = registra soltanto, non suona (prima settimana)
+  flash_s: 3.0             # durata del riquadro rosso
+
+ui:
+  tile_width: 800          # larghezza di ogni riquadro nel mosaico

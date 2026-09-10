@@ -1,0 +1,37 @@
+# Vedetta - configurazione per il PC di lavoro (cattura schermo)
+#
+# 1. Apri nel client Camera Station una vista fissa con 2-4 riquadri grandi.
+# 2. Doppio clic su "Riquadri.bat": trascina un rettangolo attorno a ogni riquadro, premi s,
+#    dai un nome a ciascuno. Le sorgenti qui sotto vengono scritte da sole.
+# 3. Doppio clic su "Zone.bat" e disegna gli scaffali per ogni riquadro (uno alla volta).
+# 4. Doppio clic su "Avvia Vedetta.bat".
+
+model: yolo11n-pose.pt
+device: auto          # auto = scheda NVIDIA se c'è, altrimenti processore
+imgsz: 960            # persone lontane in fondo alla corsia: 960 o 1280; PC lento: 640
+conf: 0.35
+fps_target: 6         # fotogrammi analizzati al secondo per riquadro (PC lento: 4)
+
+sources: []           # i riquadri stanno nei profili negozi/<nome>.yaml (li scrive Riquadri.bat)
+
+gesture:
+  reach_min_s: 0.25
+  conceal_window_s: 4.0
+  conceal_min_s: 0.35
+  occlusion_grace_s: 1.0
+  cooldown_s: 8.0
+  min_score: 0.5
+
+clips:
+  dir: clips
+  pre_s: 8
+  post_s: 4
+  keep_hours: 12
+
+alert:
+  sound: true
+  silent_mode: true     # prima settimana: registra soltanto. Poi metti false.
+  flash_s: 3.0
+
+ui:
+  tile_width: 640

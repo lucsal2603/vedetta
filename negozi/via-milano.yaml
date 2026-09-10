@@ -1,0 +1,5 @@
+# Profilo del negozio di Brescia, Via Milano.
+# Le sorgenti (riquadri sullo schermo) le scrive Riquadri.bat; le zone scaffale stanno in zones/via-milano/.
+# Qui puoi anche cambiare le impostazioni comuni solo per questo negozio, per esempio:
+# imgsz: 960
+sources: []

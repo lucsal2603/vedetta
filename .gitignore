@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+clips/
+test-videos/
+*.pt
+*.onnx
+events.csv
+build/
+dist/
+runs/
+.DS_Store
+assets/alert.wav

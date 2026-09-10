@@ -1,0 +1,48 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Dipendenze (torch solo CPU)
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt pyinstaller
+      - name: Scarica il modello
+        run: python -c "from ultralytics import YOLO; YOLO('yolo11n-pose.pt')"
+      - name: Test
+        run: python -m unittest tests.test_gesture
+      - name: PyInstaller
+        run: pyinstaller packaging/vedetta.spec --noconfirm
+      - name: Cartella finale
+        shell: bash
+        run: |
+          mkdir -p out/Vedetta-windows
+          cp -r dist/Vedetta out/Vedetta-windows/Vedetta
+          cp yolo11n-pose.pt config.windows.yaml README.md out/Vedetta-windows/
+          mv out/Vedetta-windows/config.windows.yaml out/Vedetta-windows/config.yaml
+          cp "packaging/Avvia Vedetta.bat" packaging/Zone.bat packaging/Riquadri.bat out/Vedetta-windows/
+          cp -r negozi out/Vedetta-windows/negozi
+          mkdir -p out/Vedetta-windows/zones out/Vedetta-windows/clips
+          cd out && 7z a -tzip Vedetta-windows.zip Vedetta-windows > /dev/null
+          ls -la Vedetta-windows.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Vedetta-windows
+          path: out/Vedetta-windows.zip
+      - name: Release (solo sui tag v*)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: out/Vedetta-windows.zip

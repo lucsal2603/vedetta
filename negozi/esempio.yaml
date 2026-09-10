@@ -1,0 +1,8 @@
+# Esempio di profilo negozio (copialo con il nome del negozio).
+imgsz: 960          # persone lontane in fondo alla corsia: 960 o 1280 (più lento)
+fps_target: 5
+sources:
+  - name: corsia-igiene
+    type: screen
+    monitor: 1
+    region: [0, 60, 1920, 1020]      # x, y, larghezza, altezza sullo schermo

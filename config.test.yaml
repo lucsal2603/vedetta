@@ -1,0 +1,12 @@
+model: yolo11n-pose.pt
+device: auto
+imgsz: 640
+conf: 0.35
+fps_target: 8
+sources:
+  - {name: mele, type: video, path: test-videos/pexels-spesa-mele.mp4, loop: false}
+  - {name: corsia-donna, type: video, path: test-videos/pexels-corsia-donna.mp4, loop: false}
+  - {name: latticini, type: video, path: test-videos/pexels-latticini.mp4, loop: false}
+clips: {dir: clips, pre_s: 8, post_s: 4, keep_hours: 12}
+alert: {sound: false, silent_mode: true, flash_s: 3.0}
+ui: {tile_width: 640}
