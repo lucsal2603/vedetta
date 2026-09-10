@@ -93,7 +93,8 @@ def main(argv=None):
         where = cfg["_store_path"] or args.config
         print(f"Nessuna sorgente in {where}. Negozi disponibili: {', '.join(cfgmod.store_names(cfg)) or 'nessuno'}")
         return 2
-    print(f"Vedetta: negozio {cfg['_store'] or '-'}, {len(cfg['sources'])} riquadri, modello su {cfg['device']}")
+    from .detector import pick_device
+    print(f"Vedetta: negozio {cfg['_store'] or '-'}, {len(cfg['sources'])} riquadri, modello su {pick_device(cfg['device'])}")
     if args.no_loop:
         for s in cfg["sources"]:
             s["loop"] = False

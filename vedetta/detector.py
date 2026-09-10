@@ -23,12 +23,31 @@ def pick_device(pref="auto"):
     return "cpu"
 
 
+def check_torchvision_nms():
+    """Nell'eseguibile impacchettato torchvision può caricarsi senza i suoi operatori C++.
+    In quel caso lo togliamo da sys.modules: ultralytics usa allora la propria NMS in puro torch."""
+    import sys
+    if "torchvision" not in sys.modules:
+        return True
+    try:
+        import torch
+        import torchvision
+        torchvision.ops.nms(torch.tensor([[0.0, 0.0, 1.0, 1.0]]), torch.tensor([0.9]), 0.5)
+        return True
+    except Exception as e:
+        print("[detector] torchvision senza operatori NMS, uso la NMS interna:", str(e).splitlines()[0])
+        for name in [m for m in sys.modules if m == "torchvision" or m.startswith("torchvision.")]:
+            sys.modules.pop(name, None)
+        return False
+
+
 class PoseTracker:
     """Un'istanza per telecamera: il tracker interno tiene lo stato per sorgente."""
 
     def __init__(self, model_path, device="auto", imgsz=640, conf=0.35):
         from ultralytics import YOLO
         self.model = YOLO(model_path)
+        check_torchvision_nms()
         self.device = pick_device(device)
         self.imgsz = imgsz
         self.conf = conf
